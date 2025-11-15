@@ -24,7 +24,7 @@
       </div>
       
       <div class="chat-main">
-        <div class="messages" ref="messagesRef">
+        <div class="messages" ref="messagesRef" @scroll="handleScroll">
           <ChatMessage
             v-for="(message, index) in currentMessages"
             :key="index"
@@ -111,6 +111,7 @@ const currentMessages = ref([])
 const chatHistory = ref([])
 const fileInput = ref(null)
 const selectedFiles = ref([])
+const isUserScrolling = ref(false)
 
 // 自动调整输入框高度
 const adjustTextareaHeight = () => {
@@ -123,10 +124,17 @@ const adjustTextareaHeight = () => {
   }
 }
 
-// 滚动到底部
+// 检查用户是否在底部附近
+const isNearBottom = () => {
+  if (!messagesRef.value) return true
+  const threshold = 100 // 距离底部100px内认为是"在底部"
+  return messagesRef.value.scrollHeight - messagesRef.value.scrollTop - messagesRef.value.clientHeight <= threshold
+}
+
+// 智能滚动到底部
 const scrollToBottom = async () => {
   await nextTick()
-  if (messagesRef.value) {
+  if (messagesRef.value && isNearBottom()) {
     messagesRef.value.scrollTop = messagesRef.value.scrollHeight
   }
 }
@@ -394,6 +402,8 @@ const removeFile = (index) => {
 onMounted(() => {
   loadChatHistory()
   adjustTextareaHeight()
+  // 初始化时用户在底部
+  isUserScrolling.value = false
 })
 </script>
 
@@ -824,4 +834,4 @@ onMounted(() => {
     }
   }
 }
-</style> 
+</style>

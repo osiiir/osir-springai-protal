@@ -386,8 +386,9 @@ const formatTime = (timestamp) => {
     .text {
       padding: 1rem;
       border-radius: 1rem 1rem 1rem 0;
-      line-height: 1.5;
-      white-space: pre-wrap;
+      line-height: 1.2;
+      // 保留换行符--mark
+      white-space: pre-line;
       color: var(--text-color);
 
       .cursor {
@@ -730,7 +731,8 @@ const formatTime = (timestamp) => {
 
 .markdown-content {
   :deep(p) {
-    margin: 0.5rem 0;
+    // 段落间距--mark
+    margin: 0.05rem 0;
 
     &:first-child {
       margin-top: 0;
