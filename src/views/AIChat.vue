@@ -139,6 +139,15 @@ const scrollToBottom = async () => {
   }
 }
 
+// mark
+// 强制滚动到底部（用于历史记录加载等场景）
+const forceScrollToBottom = async () => {
+  await nextTick()
+  if (messagesRef.value) {
+    messagesRef.value.scrollTop = messagesRef.value.scrollHeight
+  }
+}
+
 // 文件类型限制
 const FILE_LIMITS = {
   image: { 
@@ -347,6 +356,11 @@ const loadChat = async (chatId) => {
   try {
     const messages = await chatAPI.getChatMessages(chatId, 'chat')
     currentMessages.value = messages
+    // 加载完成后强制滚动到底部显示最新内容
+    await nextTick()
+    await forceScrollToBottom()
+    // 重置用户滚动状态，表示现在在底部
+    isUserScrolling.value = false
   } catch (error) {
     console.error('加载对话消息失败:', error)
     currentMessages.value = []
